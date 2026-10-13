@@ -1,0 +1,16 @@
+const menu = document.querySelector('.menu');
+const nav = document.querySelector('nav');
+menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){nav.classList.remove('open');menu.setAttribute('aria-expanded','false');const close=document.getElementById('chatCloseBtn');if(document.getElementById('chatbotContainer')?.classList.contains('active'))close.click();}});
+document.addEventListener('click',e=>{if(!e.target.closest('header')){nav.classList.remove('open');menu.setAttribute('aria-expanded','false');}});
+document.querySelectorAll('nav a').forEach(a=>{if(a.getAttribute('href')===(location.pathname.split('/').pop()||'index.html'))a.setAttribute('aria-current','page');});
+document.getElementById('year').textContent=new Date().getFullYear();
+const pause=document.getElementById('pausePartners');pause?.addEventListener('click',()=>{const paused=document.querySelector('.partners').classList.toggle('paused');pause.setAttribute('aria-pressed',String(paused));pause.textContent=paused?'Resume motion ▷':'Pause motion Ⅱ';});
+const form=document.getElementById('enquiry');
+if(form){const requested=new URLSearchParams(location.search).get('solution');if(requested){const option=Array.from(form.service.options).find(o=>o.value===requested);if(option)form.service.value=requested;}form.addEventListener('submit',e=>{e.preventDefault();if(!form.reportValidity())return;const data=new FormData(form);const body=`Name: ${data.get('name')}\nEmail: ${data.get('email')}\nPhone: ${data.get('phone') || ''}\nCompany: ${data.get('company') || ''}\nService: ${data.get('service')}\n\n${data.get('message')}`;location.href=`mailto:info@vcaregroups.net?subject=${encodeURIComponent('Website enquiry: '+data.get('service'))}&body=${encodeURIComponent(body)}`;document.getElementById('formStatus').textContent='Your email draft is ready. Please send it from your email app. If it did not open, email info@vcaregroups.net directly.';});}
+// Give the original chat launcher native keyboard access.
+document.addEventListener('DOMContentLoaded',()=>{const trigger=document.getElementById('chatbotToggleBtn');if(trigger){trigger.setAttribute('role','button');trigger.tabIndex=0;trigger.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();trigger.click();}});}document.getElementById('chatInput')?.setAttribute('aria-label','Your question for V Care');});
+
+// Original catalogue tabs and product/project category filters.
+document.querySelectorAll('[data-tab]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b===button));document.querySelectorAll('.tab-content-panel').forEach(panel=>panel.classList.toggle('active',panel.id===button.dataset.tab));}));
+document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-filter]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});document.querySelectorAll('.product-card-item,.project-card-item').forEach(card=>{card.hidden=button.dataset.filter!=='all'&&card.dataset.category!==button.dataset.filter;});}));
